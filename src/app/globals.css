@@ -5,6 +5,11 @@
   --foreground: #171717;
 }
 
+:root{
+  --color-fondo: #f9fbfe;
+  --color-boton: #5b26bd;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
