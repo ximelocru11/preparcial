@@ -13,6 +13,8 @@ export default function DeleteAuthorPage() {
   const router = useRouter();
 
 
+  
+
   useEffect(() => {
     if (!author) router.replace("/authors");
   }, [author, router]);
