@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
-import type { Author } from "../types/author"; 
+import type { Author } from "../../types/author"; 
 
-export type NewAuthor = Pick<Author, "name" | "description" | "birthDate" | "image">;
+export type NewAuthor = Pick<Author, "name" | "description" | "birthDate" | "image" >;
 
 interface AuthorsState {
   authors: Author[];

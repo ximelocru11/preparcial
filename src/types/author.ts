@@ -32,5 +32,7 @@ export interface Author {
   birthDate: string;     
   name: string;
   description: string;
-  image: string;    
+  image: string;
+  books: Book[];
+  prizes: Prize[];    
 } 
