@@ -1,0 +1,9 @@
+.git
+.git/**
+node_modules
+.next
+npm-debug.log
+.DS_Store
+.env*
+.vscode
+.idea

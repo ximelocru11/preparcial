@@ -1,19 +1,25 @@
 import { Author } from "@/types/author";
-
-const BASE_URL = "http://127.0.0.1:8080";
-
+import { Prize } from "@/types/author";
+import { Book } from "@/types/author";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE as string;
 
 /* =======================
    AUTORES
 ======================= */
-export async function createAuthor(author: Omit<Author, "id" | "books" | "prizes">): Promise<Author> {
-  const res = await fetch(`${BASE_URL}/authors`, {
+export async function createAuthor(author: Omit<Author, "id">): Promise<Author> {
+  const res = await fetch(`${BASE_URL}/api/authors`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(author),
   });
-  if (!res.ok) throw new Error(`Error al crear autor: ${res.statusText}`);
-  return res.json();
+
+  if (!res.ok) {
+    throw new Error("Error al crear el autor");
+  }
+
+  return res.json() as Promise<Author>;
 }
 
 export async function getAuthors(): Promise<Author[]> {
@@ -26,7 +32,7 @@ export async function getAuthors(): Promise<Author[]> {
    LIBROS
 ======================= */
 export async function createBook(book: Omit<Book, "id">): Promise<Book> {
-  const res = await fetch(`${BASE_URL}/books`, {
+  const res = await fetch(`${BASE_URL}/api/books`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(book),
@@ -36,13 +42,13 @@ export async function createBook(book: Omit<Book, "id">): Promise<Book> {
 }
 
 export async function getBooks(): Promise<Book[]> {
-  const res = await fetch(`${BASE_URL}/books`);
+  const res = await fetch(`${BASE_URL}/api/books`);
   if (!res.ok) throw new Error("Error al obtener libros");
   return res.json();
 }
 
 export async function getBookById(id: number): Promise<Book> {
-  const res = await fetch(`${BASE_URL}/books/${id}`);
+  const res = await fetch(`${BASE_URL}/api/books/${id}`);
   if (!res.ok) throw new Error("Error al obtener libro");
   return res.json();
 }
@@ -77,8 +83,11 @@ export async function linkPrizeToAuthor(prizeId: number, authorId: number): Prom
 /* =======================
    REVIEWS
 ======================= */
-export async function createReview(bookId: number, review: { [key: string]: any }): Promise<any> {
-  const res = await fetch(`${BASE_URL}/books/${bookId}/reviews`, {
+export async function createReview(
+  bookId: number,
+  review: Record<string, unknown>
+): Promise<Record<string, unknown>> {
+  const res = await fetch(`${BASE_URL}/api/books/${bookId}/reviews`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(review),

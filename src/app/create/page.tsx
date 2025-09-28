@@ -140,7 +140,7 @@ export default function CreateAuthorPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+          className="px-4 py-2 rounded-lg shadow bg-[var(--color-boton)] text-white disabled:opacity-50"
         >
           {isSubmitting ? "Guardando..." : "Crear Autor"}
         </button>
