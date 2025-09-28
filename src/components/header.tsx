@@ -9,6 +9,7 @@ export default function Header() {
           <Link href="/" className="px-3 hover:text-gray-300">Inicio</Link>
           <Link href="/authors" className="px-3 hover:text-gray-300">Autores</Link>
           <Link href="/create" className="px-3 hover:text-gray-300">Nuevo autor</Link>
+          <Link href="/books" className="px-3 hover:text-gray-300">Libros</Link>
         </nav>
       </div>
     </header>

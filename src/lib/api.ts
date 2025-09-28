@@ -1,6 +1,6 @@
 import { Author } from "@/types/author";
-import { Prize } from "@/types/author";
 import { Book } from "@/types/author";
+import { Prize } from "@/types/author";
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE as string;
 
 /* =======================
@@ -83,15 +83,19 @@ export async function linkPrizeToAuthor(prizeId: number, authorId: number): Prom
 /* =======================
    REVIEWS
 ======================= */
-export async function createReview(
-  bookId: number,
-  review: Record<string, unknown>
-): Promise<Record<string, unknown>> {
+export async function createReview(bookId: number, review: { description: string }) {
   const res = await fetch(`${BASE_URL}/api/books/${bookId}/reviews`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(review),
   });
-  if (!res.ok) throw new Error("Error al crear review");
+
+  if (!res.ok) {
+    throw new Error(`Error creando reseña: ${res.status}`);
+  }
+
   return res.json();
 }
+
