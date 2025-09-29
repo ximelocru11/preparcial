@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAuthors } from "@/app/store/authors"; // usa SIEMPRE este mismo path
+import { useAuthors } from "@/app/store/authors"; 
+import { deleteAuthor } from "@/lib/api";
 
 export default function DeleteAuthorPage() {
   const { id } = useParams<{ id: string }>();
   const authorId = Number(id);
 
   const author = useAuthors((s) => s.getById(authorId));
-  const remove = useAuthors((s) => s.remove);
   const router = useRouter();
 
 
@@ -22,10 +22,16 @@ export default function DeleteAuthorPage() {
   // Mientras redirige (o si ya no hay autor), no renders nada
   if (!author) return null;
 
-  function onDelete() {
-    remove(authorId);         // quita del store
-    router.replace("/authors"); // navega y evita volver con “atrás”
-  }
+  async function onDelete() {
+    try {
+      await deleteAuthor(authorId);
+      useAuthors.getState().remove(authorId);  // sincroniza store local
+      router.replace("/authors");
+    } catch (err) {
+      console.error("Error al eliminar autor:", err);
+      alert("No se pudo eliminar autor");
+    }
+}
 
   return (
     <main className="mt-12 p-6 px-20 max-w-6xl mx-auto space-y-6">

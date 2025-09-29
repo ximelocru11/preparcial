@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import type { Author } from "../../types/author"; 
 import Link from "next/link";
-import AutorCard from "../../components/autores";
+import AutorCard from "../../components/autoresCard";
 import { useAuthors } from "../store/authors";
 
 const BASE_URL = "http://127.0.0.1:8080";

@@ -8,6 +8,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { updateAuthor } from "@/lib/api";  
 function todayLocalISO() {
   const d = new Date();
   const y = d.getFullYear();
@@ -35,7 +36,6 @@ export default function EditAuthorPage() {
     const authorId = Number(id);
 
     const author = useAuthors(s => s.getById(authorId));
-    const update = useAuthors(s => s.update);
     const router = useRouter();
 
     const {
@@ -62,10 +62,23 @@ export default function EditAuthorPage() {
 
     if (!author) return <main className="p-6">Autor no encontrado</main>;
 
-    const onSubmit = (data: FormData) => {
-        update(authorId, data);   // actualiza en el store
-        router.push("/authors");  // vuelve a la lista (sin refresh)
-    };
+    async function onSubmit(data: FormData) {
+    try {
+        const updated = await updateAuthor(authorId, {
+        name: data.name,
+        description: data.description,
+        birthDate: data.birthDate,
+        image: data.image,
+        });
+        // si tienes store:
+        useAuthors.getState().update(authorId, updated);  // sincroniza store
+        // luego redirige
+        router.push("/authors");
+    } catch (err) {
+        console.error("Error actualizando autor:", err);
+        alert("No se pudo actualizar el autor");
+    }
+    }
 
     const imagePreview = watch("image");
 

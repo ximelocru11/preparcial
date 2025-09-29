@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { getBooks } from "@/lib/api";
 import { Book } from "@/types/author";
-import BooksCard from "../../components/books";
+import BooksCard from "../../components/booksCard";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function BooksPage() {
   const [books, setBooks] = useState<Book[] | null>(null);
@@ -21,7 +22,6 @@ export default function BooksPage() {
 
   return (
    <main className= "p-6 px-20 max -w-6xl mx-auto space-y-6 bg-[var(--color-fondo)]">
-
       <div className="mt-8 flex items-center justify-between">
             <h1 className="text-3xl font-bold">Libros</h1>
         </div>

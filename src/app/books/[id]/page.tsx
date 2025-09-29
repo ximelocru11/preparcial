@@ -1,14 +1,15 @@
-// app/books/[id]/page.tsx
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { getBookById, createReview } from "@/lib/api";
+import { getBookById } from "@/lib/api";
 import Link from "next/link";
+import Image from "next/image";
+import ReviewList from "@/components/reviewList";
 
 type Review = {
-    name: string;
-    source: string;
-    description: string;
+  name: string;
+  source: string;
+  description: string;
 };
 
 type Book = {
@@ -26,60 +27,62 @@ export default function BookDetail() {
   const bookId = Number(id);
   const [book, setBook] = useState<Book | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [comment, setComment] = useState("");
-  const [rating, setRating] = useState(5);
 
   useEffect(() => {
     getBookById(bookId)
       .then(setBook)
-      .catch(e => setError(String(e)));
+      .catch((e) => setError(String(e)));
   }, [bookId]);
-
-  async function onAddReview(e: React.FormEvent) {
-    e.preventDefault();
-    try {
-      await createReview(bookId, { author: "Anon", comment, rating });
-      // recarga el libro (o podrías actualizar reviews en memoria)
-      const updated = await getBookById(bookId);
-      setBook(updated);
-      setComment("");
-      setRating(5);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      alert("Error creando review: " + message);
-    }
-  }
 
   if (error) return <div className="p-6 text-red-600">{error}</div>;
   if (!book) return <div className="p-6">Cargando...</div>;
 
   return (
-    <main className="p-6 max-w-3xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold">{book.name}</h1>
-      <img src={book.image} alt={book.name} className="w-full h-72 object-cover rounded" />
-      <p>{book.description}</p>
-      <p className="text-sm">ISBN: {book.isbn}</p>
-      <p className="text-sm">Fecha: {book.publishingDate}</p>
-
-      <section>
-        <h2 className="font-semibold">Reviews</h2>
-        {book.reviews?.length ? (
-          book.reviews.map((r: Review, idx: number) => (
-        <div key={idx} className="border rounded p-3 my-2">
-            <div className="text-sm">Comentario: {r.description}</div>
+    <main className="p-6 max-w-3xl mx-auto space-y-8">
+      {/* Header libro */}
+      <div className="space-y-3">
+        <h1 className="text-3xl font-bold text-gray-900">{book.name}</h1>
+        <div className="relative w-full h-72 rounded-lg overflow-hidden shadow">
+          <Image
+            src={book.image}
+            alt={book.name}
+            fill
+            className="object-cover" unoptimized
+          />
         </div>
-        ))
-        ) : (
-          <p className="text-sm">No hay reviews todavía</p>
-        )}
-      </section>
-      <section>
+        <div className="mt-6 rounded-lg border border-gray-200 shadow-sm bg-white p-6 space-y-4">
+          <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">
+            Descripción del libro
+          </h2>
+
+          <p className="text-gray-700 leading-relaxed">{book.description}</p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-600">ISBN</span>
+              <span className="text-gray-900">{book.isbn}</span>
+            </div>
+
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-600">Fecha de publicación</span>
+              <span className="text-gray-900">{book.publishingDate}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Reviews */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">Reseñas</h2>
+        <ReviewList reviews={book.reviews || []} />
+
         <Link
-      href={`/books/${book.id}/reviews`}
-      className="px-3 py-1 rounded-lg shadow bg-[var(--color-boton)] text-white hover:opacity-80"
-    >
-      Agregar reseña
-    </Link>
+          href={`/books/${book.id}/reviews`}
+          className="inline-block px-4 py-2 rounded-lg shadow bg-[var(--color-boton)] text-white hover:opacity-50 transition"
+        >
+          Agregar reseña
+        </Link>
       </section>
     </main>
   );

@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  backend:
+    image: bookstore:latest       # usa la imagen que ya construyó el profe
+    container_name: backend
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: .                  # carpeta actual (tu repo del front)
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app                    # para ver cambios en dev con npm run dev
+      - /app/node_modules
+    environment:
+      # el front accede al back usando el nombre de servicio 'backend'
+      - NEXT_PUBLIC_API_URL=http://backend:8080
+    depends_on:
+      - backend
